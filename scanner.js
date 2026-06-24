@@ -134,17 +134,15 @@ function getPortsFromRange(start, end) {
 
 // Block scanning private/reserved IP ranges
 function isPrivateOrReserved(host) {
-  // Allow localhost for demo purposes
-  if (host === "localhost" || host === "127.0.0.1") return false;
-
   const privateRanges = [
-    /^10\./,
-    /^172\.(1[6-9]|2\d|3[01])\./,
-    /^192\.168\./,
-    /^169\.254\./,
-    /^::1$/,
-    /^fc00:/,
-    /^fe80:/,
+    /^127\./,                 // Block loopback (127.0.0.0/8)
+    /^10\./,                  // Block 10.0.0.0/8
+    /^172\.(1[6-9]|2\d|3[01])\./, // Block 172.16.0.0/12
+    /^192\.168\./,            // Block 192.168.0.0/16
+    /^169\.254\./,            // Block 169.254.0.0/16 (Link-local)
+    /^::1$/,                  // Block IPv6 loopback
+    /^fc00:/,                 // Block IPv6 Unique Local Addresses
+    /^fe80:/,                 // Block IPv6 Link-Local
   ];
 
   return privateRanges.some((re) => re.test(host));
