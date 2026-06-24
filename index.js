@@ -65,6 +65,12 @@ io.on("connection", (socket) => {
       return;
     }
 
+    // 🚨 SECURITY FIX: Prevent scanning internal/private networks (SSRF protection)
+    if (isPrivateOrReserved(resolvedIP)) {
+      socket.emit("scan-error", { message: "Scanning private or reserved IP ranges is strictly prohibited." });
+      return;
+    }
+
     // Build port list
     let ports = [];
     if (mode === "preset" && preset) {
